@@ -8,7 +8,10 @@
 <meta property="og:title" content="KPOTAN Sènou Honorat | Développeur IA & Automatisation">
 <meta property="og:description" content="Développeur passionné par l'IA et l'automatisation. Créateur de AISènou, AIStudy et Chariow.">
 <meta property="og:type" content="profile">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://honoratsenou-coder.github.io/ma-carte-digitale/og-image.png">
+<meta property="og:url" content="https://honoratsenou-coder.github.io/ma-carte-digitale/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://honoratsenou-coder.github.io/ma-carte-digitale/og-image.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232f8dff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -296,6 +299,55 @@
   }
   .share-btn:active{transform:scale(0.98);}
 
+  .contact-form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .contact-form input,
+  .contact-form textarea{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.02);
+    color:var(--text-hi);
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    resize:vertical;
+  }
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder{color:var(--text-lo);}
+  .contact-form input:focus,
+  .contact-form textarea:focus{
+    outline:none;
+    border-color:var(--blue);
+    background:rgba(47,141,255,0.05);
+  }
+  .submit-btn{
+    padding:13px;
+    border-radius:12px;
+    border:none;
+    background:linear-gradient(90deg, var(--blue), var(--red));
+    color:#fff;
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:opacity 0.2s, transform 0.15s;
+  }
+  .submit-btn:hover{opacity:0.9;}
+  .submit-btn:active{transform:scale(0.98);}
+  .submit-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  #form-status{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-lo);
+    min-height:16px;
+  }
+  #form-status.ok{color:#7fe0a0;}
+  #form-status.err{color:#ff8fa3;}
+
   /* ---------- FOOTER ---------- */
   .final-quote{
     text-align:center;
@@ -413,6 +465,19 @@
   </div>
 
   <div class="panel">
+    <div class="panel-title"><span class="dot"></span>Envoyez-moi un message</div>
+    <form id="contact-form" class="contact-form">
+      <input type="hidden" name="access_key" value="e243fb65-d8f1-4687-aee7-876e0b6fd79f">
+      <input type="hidden" name="subject" value="Nouveau message depuis ta carte NEXERO">
+      <input type="text" name="name" placeholder="Votre nom" required>
+      <input type="email" name="email" placeholder="Votre email" required>
+      <textarea name="message" placeholder="Votre message" rows="4" required></textarea>
+      <button type="submit" class="submit-btn">Envoyer le message</button>
+      <p id="form-status"></p>
+    </form>
+  </div>
+
+  <div class="panel">
     <div class="panel-title"><span class="dot"></span>Retrouvez-moi sur</div>
     <div class="links">
       <a class="link shop" href="https://fkszibej.mychariow.shop" target="_blank" rel="noopener">
@@ -439,9 +504,9 @@
         <span class="ico">🎓</span>
         <span><span class="lbl">Skool</span><span class="val">honorat-senou-8902</span></span>
       </a>
-      <a class="link" href="mailto:honoatsenou@gmail.com" target="_blank" rel="noopener">
+      <a class="link" href="mailto:honoratsenou@gmail.com" target="_blank" rel="noopener">
         <span class="ico">✉️</span>
-        <span><span class="lbl">Email</span><span class="val">honoatsenou@gmail.com</span></span>
+        <span><span class="lbl">Email</span><span class="val">honoratsenou@gmail.com</span></span>
       </a>
       <a class="link" href="mailto:Senouhonorat@gmail.com" target="_blank" rel="noopener">
         <span class="ico">✉️</span>
@@ -461,6 +526,66 @@
 </div>
 
 <script>
+const WEB3FORMS_KEY = "e243fb65-d8f1-4687-aee7-876e0b6fd79f";
+
+// ---- Formulaire de contact ----
+const form = document.getElementById('contact-form');
+const statusEl = document.getElementById('form-status');
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  const btn = form.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  statusEl.textContent = '';
+  statusEl.className = '';
+
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(Object.fromEntries(new FormData(form)))
+  })
+  .then(r => r.json())
+  .then(data => {
+    if(data.success){
+      statusEl.textContent = '✅ Message envoyé, merci !';
+      statusEl.className = 'ok';
+      form.reset();
+    } else {
+      statusEl.textContent = "❌ Erreur, réessaie plus tard.";
+      statusEl.className = 'err';
+    }
+  })
+  .catch(() => {
+    statusEl.textContent = "❌ Erreur réseau, réessaie.";
+    statusEl.className = 'err';
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le message';
+  });
+});
+
+// ---- Notification de visite ----
+(function notifyVisit(){
+  if(WEB3FORMS_KEY === "e243fb65-d8f1-4687-aee7-876e0b6fd79f") return; // clé pas encore configurée
+  const key = 'nexero_last_visit_notified';
+  const last = localStorage.getItem(key);
+  const now = Date.now();
+  // évite de spammer : 1 notification max toutes les 6h par visiteur
+  if(last && (now - parseInt(last)) < 6*60*60*1000) return;
+  localStorage.setItem(key, String(now));
+
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject: '👀 Nouvelle visite sur ta carte NEXERO',
+      message: 'Quelqu\'un vient de consulter ta carte digitale.\nPage: ' + window.location.href + '\nDate: ' + new Date().toLocaleString('fr-FR')
+    })
+  }).catch(()=>{});
+})();
+
 function shareCard(){
   const url = window.location.href;
   const isFile = url.startsWith('file://');
