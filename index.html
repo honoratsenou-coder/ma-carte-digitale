@@ -467,7 +467,7 @@
   <div class="panel">
     <div class="panel-title"><span class="dot"></span>Envoyez-moi un message</div>
     <form id="contact-form" class="contact-form">
-      <input type="hidden" name="access_key" value="e243fb65-d8f1-4687-aee7-876e0b6fd79f">
+      <input type="hidden" name="access_key" value="3ebf9c1f-7492-4fcc-bdb5-816bd4016b11">
       <input type="hidden" name="subject" value="Nouveau message depuis ta carte NEXERO">
       <input type="text" name="name" placeholder="Votre nom" required>
       <input type="email" name="email" placeholder="Votre email" required>
@@ -526,7 +526,7 @@
 </div>
 
 <script>
-const WEB3FORMS_KEY = "e243fb65-d8f1-4687-aee7-876e0b6fd79f";
+const WEB3FORMS_KEY = "3ebf9c1f-7492-4fcc-bdb5-816bd4016b11";
 
 // ---- Formulaire de contact ----
 const form = document.getElementById('contact-form');
@@ -567,7 +567,7 @@ form.addEventListener('submit', function(e){
 
 // ---- Notification de visite ----
 (function notifyVisit(){
-  if(WEB3FORMS_KEY === "e243fb65-d8f1-4687-aee7-876e0b6fd79f") return; // clé pas encore configurée
+  if(WEB3FORMS_KEY === "3ebf9c1f-7492-4fcc-bdb5-816bd4016b11") return; // clé pas encore configurée
   const key = 'nexero_last_visit_notified';
   const last = localStorage.getItem(key);
   const now = Date.now();
